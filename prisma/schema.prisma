@@ -18,3 +18,19 @@ model Post {
 
     @@index([name])
 }
+
+model User {
+    id          String      @id
+    name        String      @db.Char(30)
+    username    String      @unique @db.Char(64)
+    email       String      @unique
+    imageUrl    String
+    bannerUrl   String?
+    location    String?     @db.Char(30)
+    website     String?     @db.Char(30)
+    isCompleted Boolean     @default(false)
+    bio         String?     @db.Char(255)
+
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+}

@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.6",
+    "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "^5.6.0",
+    "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@t3-oss/env-nextjs": "^0.7.1",
     "@tanstack/react-query": "^4.36.1",
@@ -29,6 +31,7 @@
     "next": "^14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.50.1",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.2.1",
@@ -37,7 +40,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.44.7",
-    "@types/node": "^18.17.0",
+    "@types/node": "^18.19.14",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@typescript-eslint/eslint-plugin": "^6.11.0",

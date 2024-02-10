@@ -19,31 +19,26 @@ import {
 } from "~/components/ui/form";
 
 export default function OnboardingUser({
-  initialValues,
+  clerkUserData,
 }: {
-  initialValues: {
-    id: string | undefined;
-    imageUrl: string | undefined;
-    name: string;
-    username: string | undefined;
-    email: string | undefined;
-    bio: string;
-  };
+  clerkUserData?: any;
 }) {
-  console.log("initial values", initialValues);
-  const idHint = useId();
-  const emailHint = useId();
+  console.log(clerkUserData);
 
   const FormSchema = z.object({
-    username: z.string().min(2, {
+    name: z.string().min(2, {
       message: "Username must be at least 2 characters.",
+    }),
+    bio: z.string().min(2, {
+      message: "Bio must be at least 2 characters",
     }),
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      bio: "",
     },
   });
 
@@ -56,13 +51,31 @@ export default function OnboardingUser({
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     console.log("datas", data);
     mutate({
-      name: "John Doe",
       bio: "",
-      email: emailHint,
-      imageUrl: "",
+      email: clerkUserData?.emailAddresses[0]?.emailAddress,
+      id: clerkUserData?.id,
+      imageUrl: clerkUserData?.imageUrl,
       isCompleted: false,
-      username: data.username,
-      id: Date.now().toString(),
+      name: clerkUserData?.lastName?.toLowerCase(),
+      username: clerkUserData?.username,
+    });
+  };
+
+  const currentLoginUserData = api.user.getCurrentUser.useQuery({
+    id: clerkUserData?.id,
+  });
+
+  console.log("ini null", currentLoginUserData.data);
+
+  const handler = () => {
+    mutate({
+      bio: "",
+      email: clerkUserData?.emailAddresses[0]?.emailAddress,
+      id: clerkUserData?.id,
+      imageUrl: clerkUserData?.imageUrl,
+      isCompleted: false,
+      name: clerkUserData?.lastName?.toLowerCase(),
+      username: clerkUserData?.username,
     });
   };
 
@@ -72,7 +85,23 @@ export default function OnboardingUser({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="username"
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>pick id</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} disabled={isLoading} />
+                </FormControl>
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="bio"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>pick id</FormLabel>
@@ -89,6 +118,8 @@ export default function OnboardingUser({
           <Button type="submit">Submit</Button>
         </form>
       </Form>
+
+      <Button onClick={handler}>click</Button>
     </section>
   );
 }

@@ -1,68 +1,51 @@
-import { unstable_noStore as noStore } from "next/cache";
+import { currentUser } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { api } from "~/trpc/server";
+import Anything from "./_components/anything";
+import Image from "next/image";
+import { products } from "~/lib/products";
 import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
-import { api } from "~/trpc/server";
-
 export default async function Home() {
-  noStore();
-  const hello = await api.post.hello.query({ text: "from tRPC" });
+  const clerkUser = await currentUser();
+  const currentLoginUser = await api.user.getCurrentUser.query({
+    // @ts-ignore
+    id: clerkUser?.id,
+  });
+
+  console.log("current login user", currentLoginUser);
+
+  if (!clerkUser) {
+    redirect("/join");
+  }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <h1>Hello world testing changes</h1>
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-        <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-          Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
-        </h1>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
+    <main>
+      <h1>Hello world</h1>
+      <Anything />
+      <div className="grid grid-cols-1 mt-24 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+        {products.map((product) => (
           <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-            href="https://create.t3.gg/en/usage/first-steps"
-            target="_blank"
+            key={product.id}
+            href={`/product/${product.id}`}
+            className="group"
           >
-            <h3 className="text-2xl font-bold">First Steps →</h3>
-            <div className="text-lg">
-              Just the basics - Everything you need to know to set up your
-              database and authentication.
+            <div className="aspect-h-1 aspect-w-1 hover:ring-gray-300 cursor-pointer ring ring-gray-100 ring-offset-4 w-full overflow-hidden rounded-lg bg-slate-200 xl:aspect-h-8 xl:aspect-w-7">
+              <Image
+                width={500}
+                height={500}
+                src={product.imageSrc}
+                alt={product.name}
+                className="object-cover object-center group-hover:opacity-75"
+              />
             </div>
+            <h3 className="mt-4 text-sm text-gray-7d00">{product.name}</h3>
+            <p className="mt-1 text-lg font-medium text-gray-900">
+              {product.price}
+            </p>
           </Link>
-          <Link
-            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-            href="https://create.t3.gg/en/introduction"
-            target="_blank"
-          >
-            <h3 className="text-2xl font-bold">Documentation →</h3>
-            <div className="text-lg">
-              Learn more about Create T3 App, the libraries it uses, and how to
-              deploy it.
-            </div>
-          </Link>
-        </div>
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-2xl text-white">
-            {hello ? hello.greeting : "Loading tRPC query..."}
-          </p>
-        </div>
-
-        <CrudShowcase />
+        ))}
       </div>
     </main>
-  );
-}
-
-async function CrudShowcase() {
-  const latestPost = await api.post.getLatest.query();
-
-  return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
   );
 }

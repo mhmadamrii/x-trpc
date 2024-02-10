@@ -1,7 +1,7 @@
 import { authMiddleware } from "@clerk/nextjs";
 
 export default authMiddleware({
-  publicRoutes: ["/", "/onboarding", "/api/trpc/user.getCurrentUser"],
+  publicRoutes: ["/", "/join", "/onboarding", "/api/trpc/user.getCurrentUser"],
 });
 
 export const config = {

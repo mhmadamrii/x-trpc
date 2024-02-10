@@ -9,10 +9,7 @@ export default async function LayoutRoot({
   children: React.ReactNode;
 }) {
   const clerkUser = await currentUser();
-  const currentLoginUser = await api.user.getCurrentUser.query({
-    id: clerkUser!.id,
-  });
-  console.log("current login", currentLoginUser);
+  console.log("clerk user", clerkUser);
 
   return <section>{children}</section>;
 }

@@ -1,9 +1,10 @@
 import "~/styles/globals.css";
 
+import Link from "next/link";
+
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
-import Link from "next/link";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,12 +29,6 @@ export default function RootLayout({
           <TRPCReactProvider>
             <Link href="/" className="block">
               to /
-            </Link>
-            <Link href="/home" className="block">
-              home
-            </Link>
-            <Link href="/onboarding" className="block">
-              onboarding
             </Link>
             {children}
           </TRPCReactProvider>

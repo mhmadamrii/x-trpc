@@ -23,17 +23,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`font-sans ${inter.variable}`}>
-          <TRPCReactProvider>
-            <Link href="/" className="block">
-              to /
-            </Link>
-            {children}
-          </TRPCReactProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    // <ClerkProvider>
+    <html lang="en">
+      <body className={`font-sans ${inter.variable}`}>
+        <TRPCReactProvider>
+          <Link href="/" className="block">
+            to /
+          </Link>
+          <Link href="/f1" className="block">
+            to /f1
+          </Link>
+          <Link href="/photo-feed" className="block">
+            photo feed
+          </Link>
+          <Link href="/onboarding" className="block">
+            onboarding
+          </Link>
+          {children}
+        </TRPCReactProvider>
+      </body>
+    </html>
+    // </ClerkProvider>
   );
 }

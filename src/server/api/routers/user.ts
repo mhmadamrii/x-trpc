@@ -70,4 +70,26 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+
+  updateUser: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        isCompleted: z.boolean(),
+        bio: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log("input id", input.id);
+      return ctx.db.user.update({
+        where: {
+          id: input.id,
+        },
+        // @ts-ignore
+        data: {
+          bio: input.bio,
+          isCompleted: input.isCompleted,
+        },
+      });
+    }),
 });

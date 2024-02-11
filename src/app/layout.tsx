@@ -1,10 +1,13 @@
 import "~/styles/globals.css";
 
-import Link from "next/link";
-
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
+import { currentUser } from "@clerk/nextjs";
+import { api } from "~/trpc/server";
+import { Toaster } from "~/components/ui/sonner";
+
+import Topbar from "~/components/shared/topbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,21 +20,26 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const clerkUser = await currentUser();
+  const currentLoginUser = await api.user.getCurrentUser.query({
+    id: clerkUser!.id,
+  });
+
+  console.log("current login users", currentLoginUser);
   return (
     <ClerkProvider>
       <html lang="en">
         <body className={`font-sans ${inter.variable}`}>
           <TRPCReactProvider>
-            <Link href="/" className="block">
-              to /
-            </Link>
+            <Topbar user={currentLoginUser} />
             {children}
           </TRPCReactProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

@@ -1,13 +1,10 @@
 import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
-import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "~/trpc/react";
-import { currentUser } from "@clerk/nextjs";
-import { api } from "~/trpc/server";
 import { Toaster } from "~/components/ui/sonner";
-
-import Topbar from "~/components/shared/topbar";
+import { apiGetAuthUser } from "~/lib/api-requests";
+import { cookies } from "next/headers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,23 +22,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const clerkUser = await currentUser();
-  const currentLoginUser = await api.user.getCurrentUser.query({
-    id: clerkUser!.id,
-  });
+  // const cookieStore = cookies();
+  // const token = cookieStore.get("token");
 
-  console.log("current login users", currentLoginUser);
+  // const user = await apiGetAuthUser(token?.value);
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={`font-sans ${inter.variable}`}>
-          <TRPCReactProvider>
-            <Topbar user={currentLoginUser} />
-            {children}
-          </TRPCReactProvider>
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={`font-sans ${inter.variable}`}>
+        <TRPCReactProvider>
+          {/* <Topbar user={currentLoginUser} /> */}
+          {children}
+        </TRPCReactProvider>
+        <Toaster />
+      </body>
+    </html>
   );
 }

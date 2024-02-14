@@ -1,16 +1,12 @@
 import Link from "next/link";
-import { currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import { apiGetAuthUser } from "~/lib/api-requests";
+import { cookies } from "next/headers";
 
 export default async function Home() {
-  const clerkUser = await currentUser();
+  const cookieStore = cookies();
+  const token = cookieStore.get("token");
 
-  if (!clerkUser) {
-    redirect("/sign-in");
-  } else {
-    redirect("/home");
-  }
-
+  const user = await apiGetAuthUser(token?.value);
   return (
     <main>
       <h1>My Main home</h1>

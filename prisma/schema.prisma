@@ -24,7 +24,8 @@ model User {
     name        String      @db.Char(30)
     username    String      @unique @db.Char(64)
     email       String      @unique
-    imageUrl    String
+    imageUrl    String?
+    password    String
     bannerUrl   String?
     location    String?     @db.Char(30)
     website     String?     @db.Char(30)
